@@ -1,808 +1,610 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>刀剑乱舞限锻资源计算器</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-        }
-        
-        body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
-            background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(to right, #4b6cb7, #182848);
-            color: white;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-        }
-        
-        header .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        
-        @media (max-width: 900px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .card {
-            background-color: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-        }
-        
-        .card-title {
-            font-size: 1.5rem;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #4b6cb7;
-            display: flex;
-            align-items: center;
-        }
-        
-        .card-title i {
-            margin-right: 10px;
-            color: #4b6cb7;
-        }
-        
-        .input-group {
-            margin-bottom: 20px;
-        }
-        
-        .input-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .input-row:last-child {
-            border-bottom: none;
-        }
-        
-        label {
-            font-weight: 600;
-            color: #2c3e50;
-            flex: 1;
-        }
-        
-        input[type="number"] {
-            width: 150px;
-            padding: 10px 15px;
-            border: 2px solid #e1e5eb;
-            border-radius: 8px;
-            font-size: 1rem;
-            text-align: center;
-            transition: border-color 0.3s;
-        }
-        
-        input[type="number"]:focus {
-            border-color: #4b6cb7;
-            outline: none;
-        }
-        
-        .result-display {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #2c3e50;
-            min-width: 150px;
-            text-align: right;
-            padding: 10px 15px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .resources-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        
-        .resource-item {
-            padding: 15px;
-            border-radius: 8px;
-            background-color: #f8f9fa;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        
-        .resource-item:hover {
-            background-color: #edf2f7;
-        }
-        
-        .resource-name {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #2c3e50;
-        }
-        
-        .resource-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #4b6cb7;
-        }
-        
-        .resource-remaining {
-            font-size: 0.9rem;
-            color: #666;
-            margin-top: 5px;
-        }
-        
-        .negative {
-            color: #e74c3c;
-            background-color: rgba(231, 76, 60, 0.1);
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-        
-        .positive {
-            color: #27ae60;
-            background-color: rgba(39, 174, 96, 0.1);
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-        
-        .info-box {
-            background-color: #e8f4fd;
-            border-left: 4px solid #4b6cb7;
-            padding: 15px;
-            margin-top: 25px;
-            border-radius: 0 8px 8px 0;
-            font-size: 0.95rem;
-        }
-        
-        .info-box h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 30px;
-        }
-        
-        button {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        button i {
-            margin-right: 8px;
-        }
-        
-        .btn-primary {
-            background-color: #4b6cb7;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: #3a5ca9;
-        }
-        
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #5a6268;
-        }
-        
-        .btn-success {
-            background-color: #27ae60;
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background-color: #219653;
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            color: #666;
-            font-size: 0.9rem;
-            border-top: 1px solid #ddd;
-        }
-        
-        .credits {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .highlight {
-            background-color: #fff9e6;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-            color: #d35400;
-        }
-        
-        .yuzha-types {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .yuzha-card {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            border: 2px solid transparent;
-            transition: all 0.3s;
-        }
-        
-        .yuzha-card:hover {
-            border-color: #4b6cb7;
-            transform: translateY(-3px);
-        }
-        
-        .yuzha-name {
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            color: #2c3e50;
-        }
-        
-        .yuzha-bonus {
-            font-size: 0.9rem;
-            color: #666;
-        }
-        
-        .result-summary {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            border-left: 5px solid #4b6cb7;
-        }
-        
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #ddd;
-        }
-        
-        .result-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        
-        .result-label {
-            font-weight: 600;
-        }
-        
-        .result-value {
-            font-weight: 700;
-            color: #2c3e50;
-        }
-        
-        .warning {
-            color: #e74c3c;
-            font-weight: 600;
-        }
-        
-        .note {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-            margin-top: 5px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes, viewport-fit=cover">
+  <title>刀剑乱舞 · 限锻资源计算器</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', 'Segoe UI', 'Arial', sans-serif;
+      background: #f3efe7;
+      padding: 16px 12px 32px;
+      color: #2c2c2c;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* 卡片样式 */
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      border: 1px solid #e4dbcf;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #5f4b3a;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e5d5c0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 10px;
+    }
+
+    .input-group {
+      flex: 1 1 calc(50% - 6px);
+      min-width: 140px;
+    }
+
+    .input-group.full-width {
+      flex: 1 1 100%;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #7a6a5c;
+      margin-bottom: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 1rem;
+      border: 1.5px solid #d9cec1;
+      border-radius: 14px;
+      background: #fefcf9;
+      transition: 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+      font-weight: 500;
+    }
+
+    input:focus {
+      border-color: #b87c5a;
+      outline: none;
+      background: #fffaf5;
+      box-shadow: 0 0 0 3px rgba(184,124,90,0.1);
+    }
+
+    /* 红框 —— 手动填写区域 */
+    .red-border input,
+    input.red-border {
+      border: 2px solid #e65f5f;
+      background: #fff8f6;
+    }
+
+    /* 只读输出区域 */
+    .output-field {
+      background: #f4efe9;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #3e3a37;
+      border: 1px solid #ddd2c5;
+      word-break: break-word;
+    }
+
+    .output-label {
+      font-size: 0.8rem;
+      color: #7b6b5e;
+      margin-bottom: 2px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 10px 0;
+      border-bottom: 1px dashed #e0d6cc;
+    }
+
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #5e534a;
+    }
+
+    .stat-value {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #4a3c32;
+    }
+
+    .small-note {
+      font-size: 0.75rem;
+      color: #9a8b80;
+      margin-top: 12px;
+      background: #faf8f5;
+      padding: 12px;
+      border-radius: 12px;
+      border-left: 4px solid #b69b89;
+    }
+
+    .red-bg {
+      background-color: #ffd9d9 !important;
+      color: #b33a3a;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: inline-block;
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .resource-item {
+      background: #fbf9f7;
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge {
+      background: #e6ddd2;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      color: #4a413a;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #968c82;
+      font-size: 0.8rem;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #e2d8cf;
+      margin: 16px 0;
+    }
+
+    .highlight-red {
+      background: #ffd9d9;
+      border-radius: 10px;
+      padding: 6px 12px;
+    }
+
+    /* 移动优化 */
+    @media (max-width: 400px) {
+      .input-group {
+        flex: 1 1 100%;
+      }
+      .resource-grid {
+        grid-template-columns: 1fr;
+      }
+      .card {
+        padding: 18px 14px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-calculator"></i> 刀剑乱舞限锻资源计算器</h1>
-            <p class="subtitle">根据您的锻刀目标、现有御札和资源，计算限锻活动所需全部资源，助您顺利迎接新刀剑男士</p>
-        </header>
-        
-        <div class="main-content">
-            <!-- 左侧：输入区域 -->
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-edit"></i> 输入锻刀目标</h2>
-                
-                <div class="input-group">
-                    <div class="input-row">
-                        <label for="totalPoints">总需锻刀积分：</label>
-                        <input type="number" id="totalPoints" value="5000" min="0" step="100">
-                        <div class="result-display" id="totalPointsDisplay">5000</div>
-                    </div>
-                    
-                    <div class="input-row">
-                        <label for="weilaiTime">限锻时间（天）：</label>
-                        <input type="number" id="weilaiTime" value="7" min="1" max="30">
-                        <div class="result-display" id="weilaiTimeDisplay">7 天</div>
-                    </div>
-                    
-                    <div class="input-row">
-                        <label for="currentWeilai">持有委托符：</label>
-                        <input type="number" id="currentWeilai" value="0" min="0">
-                        <div class="result-display" id="currentWeilaiDisplay">0</div>
-                    </div>
-                </div>
-                
-                <h3 class="card-title" style="font-size: 1.3rem; margin-top: 25px;"><i class="fas fa-scroll"></i> 御札持有情况</h3>
-                
-                <div class="yuzha-types">
-                    <div class="yuzha-card">
-                        <div class="yuzha-name">梅</div>
-                        <div class="yuzha-bonus">+10 积分/张</div>
-                        <input type="number" id="umeCount" value="0" min="0" style="width: 100%; margin-top: 10px;">
-                    </div>
-                    
-                    <div class="yuzha-card">
-                        <div class="yuzha-name">竹</div>
-                        <div class="yuzha-bonus">+15 积分/张</div>
-                        <input type="number" id="takeCount" value="0" min="0" style="width: 100%; margin-top: 10px;">
-                    </div>
-                    
-                    <div class="yuzha-card">
-                        <div class="yuzha-name">松</div>
-                        <div class="yuzha-bonus">+20 积分/张</div>
-                        <input type="number" id="matsuCount" value="0" min="0" style="width: 100%; margin-top: 10px;">
-                    </div>
-                    
-                    <div class="yuzha-card">
-                        <div class="yuzha-name">富士</div>
-                        <div class="yuzha-bonus">+35 积分/张</div>
-                        <input type="number" id="fujiCount" value="0" min="0" style="width: 100%; margin-top: 10px;">
-                    </div>
-                </div>
-                
-                <div class="info-box">
-                    <h3><i class="fas fa-info-circle"></i> 使用说明</h3>
-                    <p>1. 红框为手动填写处，欢迎建议反馈</p>
-                    <p>2. 缺少资源会以红底标出</p>
-                    <p>3. 表格制作：尚佳鴳 | 小红书@尚佳鴳 | QQ：3378517298</p>
-                    <p class="highlight">表格密码：daojianluanwu</p>
-                </div>
-            </div>
-            
-            <!-- 右侧：计算结果区域 -->
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-chart-bar"></i> 计算结果</h2>
-                
-                <div class="result-summary">
-                    <div class="result-item">
-                        <span class="result-label">御札总加成积分：</span>
-                        <span class="result-value" id="yuzhaTotalPoints">0</span>
-                    </div>
-                    
-                    <div class="result-item">
-                        <span class="result-label">剩余所需锻刀次数：</span>
-                        <span class="result-value" id="remainingForging">1000</span>
-                    </div>
-                    
-                    <div class="result-item">
-                        <span class="result-label">御札所需委托符：</span>
-                        <span class="result-value" id="yuzhaWeilai">0</span>
-                    </div>
-                    
-                    <div class="result-item">
-                        <span class="result-label">总需委托符：</span>
-                        <span class="result-value" id="totalWeilai">1000</span>
-                    </div>
-                    
-                    <div class="result-item">
-                        <span class="result-label">缺少委托符：</span>
-                        <span class="result-value warning" id="lackWeilai">1000</span>
-                    </div>
-                </div>
-                
-                <h3 class="card-title" style="font-size: 1.3rem; margin-top: 25px;"><i class="fas fa-box-open"></i> 所需资源计算</h3>
-                
-                <div class="input-group">
-                    <div class="input-row">
-                        <label>单次锻刀资源消耗：</label>
-                        <div class="result-display">各 700</div>
-                    </div>
-                    
-                    <div class="input-row">
-                        <label>是否启用「满10减1」：</label>
-                        <div>
-                            <input type="checkbox" id="discountToggle" checked style="width: 20px; height: 20px; margin-right: 8px;">
-                            <label for="discountToggle" style="font-weight: normal;">是 (资源消耗减少10%)</label>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="resources-grid">
-                    <div class="resource-item">
-                        <div class="resource-name">木炭</div>
-                        <div class="resource-value" id="charcoalNeeded">700,000</div>
-                        <div class="resource-remaining">
-                            当前持有：<input type="number" id="charcoalCurrent" value="0" min="0" style="width: 100px; margin-top: 5px;">
-                        </div>
-                        <div class="resource-remaining" id="charcoalRemaining">剩余：0</div>
-                    </div>
-                    
-                    <div class="resource-item">
-                        <div class="resource-name">玉钢</div>
-                        <div class="resource-value" id="steelNeeded">700,000</div>
-                        <div class="resource-remaining">
-                            当前持有：<input type="number" id="steelCurrent" value="0" min="0" style="width: 100px; margin-top: 5px;">
-                        </div>
-                        <div class="resource-remaining" id="steelRemaining">剩余：0</div>
-                    </div>
-                    
-                    <div class="resource-item">
-                        <div class="resource-name">冷却材</div>
-                        <div class="resource-value" id="coolantNeeded">700,000</div>
-                        <div class="resource-remaining">
-                            当前持有：<input type="number" id="coolantCurrent" value="0" min="0" style="width: 100px; margin-top: 5px;">
-                        </div>
-                        <div class="resource-remaining" id="coolantRemaining">剩余：0</div>
-                    </div>
-                    
-                    <div class="resource-item">
-                        <div class="resource-name">砥石</div>
-                        <div class="resource-value" id="wheelNeeded">700,000</div>
-                        <div class="resource-remaining">
-                            当前持有：<input type="number" id="wheelCurrent" value="0" min="0" style="width: 100px; margin-top: 5px;">
-                        </div>
-                        <div class="resource-remaining" id="wheelRemaining">剩余：0</div>
-                    </div>
-                </div>
-                
-                <div class="info-box" style="margin-top: 25px;">
-                    <h3><i class="fas fa-lightbulb"></i> 加速符计算建议</h3>
-                    <p>考虑加一个加速符计算，但是锻刀时间不太好确定，每个审的炉子数也不一样，如有好想法欢迎建议。</p>
-                </div>
-            </div>
+  <div class="container">
+    <!-- 标题 + 备注 -->
+    <div style="margin-bottom: 10px; display: flex; align-items: baseline; justify-content: space-between;">
+      <h1 style="font-size: 1.6rem; font-weight: 700; color: #644d3a;">⚔️限锻计算</h1>
+      <span class="badge">v1.0 · 尚佳鴳</span>
+    </div>
+    
+    <!-- ======= 卡片1: 目标积分 & 御札持有 ======= -->
+    <div class="card">
+      <h2>🎯 锻刀目标 · 御札</h2>
+      <div class="grid">
+        <!-- 总需锻刀积分 红框手动 -->
+        <div class="input-group full-width red-border">
+          <label>🔴 总需锻刀积分</label>
+          <input type="number" id="targetScore" value="5000" min="0" step="1" class="red-border" placeholder="例: 5000">
         </div>
-        
-        <div class="controls">
-            <button class="btn-primary" id="calculateBtn">
-                <i class="fas fa-calculator"></i> 立即计算
-            </button>
-            <button class="btn-secondary" id="resetBtn">
-                <i class="fas fa-redo"></i> 重置数据
-            </button>
-            <button class="btn-success" id="saveBtn">
-                <i class="fas fa-save"></i> 保存数据
-            </button>
+      </div>
+      <div style="margin: 8px 0 4px;">
+        <span class="stat-label">📌 无御札单次积分</span>
+        <span style="font-weight:700; margin-left:8px;">5</span>
+      </div>
+
+      <!-- 御札数量 四个红框输入 -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+        <div class="red-border">
+          <label>🔴 梅 ( +10 )</label>
+          <input type="number" id="plum" value="0" min="0" step="1" class="red-border" placeholder="数量">
         </div>
-        
-        <footer>
-            <p>刀剑乱舞限锻资源计算器网页版 | 基于Excel表格重构</p>
-            <p>红框为手动填写处，欢迎建议反馈 | 缺少资源红底标出</p>
-            <div class="credits">
-                <span>表格制作：尚佳鴳</span>
-                <span>小红书：@尚佳鴳</span>
-                <span>QQ：3378517298</span>
-            </div>
-            <p class="note">本工具仅用于计算参考，实际游戏数据可能有所变动，请以游戏内实际情况为准。</p>
-        </footer>
+        <div class="red-border">
+          <label>🔴 竹 ( +15 )</label>
+          <input type="number" id="bamboo" value="0" min="0" step="1" class="red-border" placeholder="数量">
+        </div>
+        <div class="red-border">
+          <label>🔴 松 ( +20 )</label>
+          <input type="number" id="pine" value="0" min="0" step="1" class="red-border" placeholder="数量">
+        </div>
+        <div class="red-border">
+          <label>🔴 富士 ( +35 )</label>
+          <input type="number" id="fuji" value="0" min="0" step="1" class="red-border" placeholder="数量">
+        </div>
+      </div>
+
+      <!-- 显示 总加成积分 / 御札可锻积分 -->
+      <div style="background: #ede8e1; border-radius: 16px; padding: 16px; margin-top: 18px;">
+        <div class="stat-row">
+          <span class="stat-label">✨ 总加成积分 (御札可锻积分)</span>
+          <span class="stat-value" id="totalBonusDisplay">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">🎴 御札所需委托符 (御札总数)</span>
+          <span class="stat-value" id="totalTicketsDisplay">0</span>
+        </div>
+      </div>
     </div>
 
-    <script>
-        // 获取所有输入元素
-        const totalPointsInput = document.getElementById('totalPoints');
-        const weilaiTimeInput = document.getElementById('weilaiTime');
-        const currentWeilaiInput = document.getElementById('currentWeilai');
+    <!-- ======= 卡片2: 锻刀次数 & 委托符 ======= -->
+    <div class="card">
+      <h2>🧾 锻刀 · 委托符</h2>
+      
+      <div class="stat-row">
+        <span class="stat-label">⚡ 剩余所需锻刀次数</span>
+        <span class="stat-value" id="remainSmithTimes">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">🔨 总锻刀次数 (总需委托符)</span>
+        <span class="stat-value" id="totalSmithTimes">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">🔄 九折后委托符</span>
+        <span class="stat-value" id="discountTickets">0.0</span>
+      </div>
+
+      <!-- 持有委托符 红框手动 -->
+      <div style="margin-top: 16px;" class="red-border full-width">
+        <label>🔴 持有委托符</label>
+        <input type="number" id="holdTickets" value="0" min="0" step="0.1" class="red-border" placeholder="当前持有委托符">
+      </div>
+
+      <div class="stat-row" style="margin-top: 8px;">
+        <span class="stat-label">📉 缺少委托符</span>
+        <span class="stat-value" id="lackTickets">0.0</span>
+      </div>
+      <div class="small-note" style="margin-top: 10px;">
+        💡 缺少委托符 = 持有 - 九折后 (负数为缺)
+      </div>
+    </div>
+
+    <!-- ======= 卡片3: 资源消耗 ======= -->
+    <div class="card">
+      <h2>⛏️ 资源消耗</h2>
+      <!-- 单次消耗，固定700但可手动调整 (无红框) -->
+      <div style="margin-bottom: 12px;">
+        <span class="stat-label">⚙️ 单次锻刀消耗 (可调)</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <div style="flex:1 1 calc(50% - 5px);">
+          <label>🪵 木炭</label>
+          <input type="number" id="perWood" value="700" min="0" step="100">
+        </div>
+        <div style="flex:1 1 calc(50% - 5px);">
+          <label>⛓️ 玉钢</label>
+          <input type="number" id="perSteel" value="700" min="0" step="100">
+        </div>
+        <div style="flex:1 1 calc(50% - 5px);">
+          <label>❄️ 冷却材</label>
+          <input type="number" id="perCool" value="700" min="0" step="100">
+        </div>
+        <div style="flex:1 1 calc(50% - 5px);">
+          <label>🪨 砥石</label>
+          <input type="number" id="perWhet" value="700" min="0" step="100">
+        </div>
+      </div>
+
+      <hr>
+      <!-- 当前持有资源 四个红框 -->
+      <div style="margin: 8px 0 12px;">
+        <span class="stat-label" style="color:#b15555;">🔴 当前持有资源 (手动填写)</span>
+      </div>
+      <div class="resource-grid">
+        <div class="red-border">
+          <label>🪵 木炭</label>
+          <input type="number" id="curWood" value="0" min="0" step="100" class="red-border" placeholder="持有">
+        </div>
+        <div class="red-border">
+          <label>⛓️ 玉钢</label>
+          <input type="number" id="curSteel" value="0" min="0" step="100" class="red-border" placeholder="持有">
+        </div>
+        <div class="red-border">
+          <label>❄️ 冷却材</label>
+          <input type="number" id="curCool" value="0" min="0" step="100" class="red-border" placeholder="持有">
+        </div>
+        <div class="red-border">
+          <label>🪨 砥石</label>
+          <input type="number" id="curWhet" value="0" min="0" step="100" class="red-border" placeholder="持有">
+        </div>
+      </div>
+
+      <!-- 总需数量 & 消耗后剩余 (带红底标记) -->
+      <div style="margin-top: 20px; background: #f4efea; border-radius: 18px; padding: 16px;">
+        <div style="display: grid; gap: 12px;">
+          <div class="flex-between">
+            <span>📦 总需木炭</span>
+            <span style="font-weight:700;" id="totalWood">0</span>
+          </div>
+          <div class="flex-between">
+            <span>📦 总需玉钢</span>
+            <span style="font-weight:700;" id="totalSteel">0</span>
+          </div>
+          <div class="flex-between">
+            <span>📦 总需冷却材</span>
+            <span style="font-weight:700;" id="totalCool">0</span>
+          </div>
+          <div class="flex-between">
+            <span>📦 总需砥石</span>
+            <span style="font-weight:700;" id="totalWhet">0</span>
+          </div>
+        </div>
+        <hr style="margin: 16px 0;">
+        <div style="display: grid; gap: 14px;">
+          <div class="flex-between">
+            <span>🪵 剩余木炭</span>
+            <span id="remWood" class="stat-value">0</span>
+          </div>
+          <div class="flex-between">
+            <span>⛓️ 剩余玉钢</span>
+            <span id="remSteel" class="stat-value">0</span>
+          </div>
+          <div class="flex-between">
+            <span>❄️ 剩余冷却材</span>
+            <span id="remCool" class="stat-value">0</span>
+          </div>
+          <div class="flex-between">
+            <span>🪨 剩余砥石</span>
+            <span id="remWhet" class="stat-value">0</span>
+          </div>
+        </div>
+        <div class="small-note" style="margin-top: 16px; background: #ffe9e1;">
+          🟥 红底数字 = 资源不足 (剩余为负)
+        </div>
+      </div>
+    </div>
+
+    <!-- 卡片4: 制作者 & 备注信息（原表细节） -->
+    <div class="card" style="background: #fcf9f5;">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+        <span style="font-weight:600;">📋 表格密码：daojianluanwu</span>
+        <span style="color:#9f7a66;">小红书@尚佳鴳</span>
+      </div>
+      <div style="margin-top: 10px;">
+        <span>📮 QQ：3378517298</span>
+      </div>
+      <div class="small-note" style="margin-top: 16px; border-left-color: #c0816b;">
+        <p style="margin-bottom: 6px;">✏️ 红框为手动填写处（目标积分/御札/委托符/当前持有）<br>缺少资源自动红底标出。</p>
+        <p style="margin-bottom: 0;">💭 考虑加加速符计算？锻刀时间/炉子数好想法欢迎建议~</p>
+      </div>
+      <div style="margin-top: 12px; font-size: 0.75rem; color: #9b8c81; text-align: right;">
+        表格制作：尚佳鴳 · 欢迎建议反馈
+      </div>
+    </div>
+
+    <!-- 最后的提示 仿原表“缺少资源红底标出” -->
+    <div class="footer">
+      ⚡ 所有结果实时更新 · 移动适配
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      "use strict";
+
+      // 获取输入DOM
+      const targetScoreInput = document.getElementById('targetScore');
+      const plumInput = document.getElementById('plum');
+      const bambooInput = document.getElementById('bamboo');
+      const pineInput = document.getElementById('pine');
+      const fujiInput = document.getElementById('fuji');
+      const holdTicketsInput = document.getElementById('holdTickets');
+
+      // 单次资源
+      const perWoodInput = document.getElementById('perWood');
+      const perSteelInput = document.getElementById('perSteel');
+      const perCoolInput = document.getElementById('perCool');
+      const perWhetInput = document.getElementById('perWhet');
+
+      // 当前持有资源
+      const curWoodInput = document.getElementById('curWood');
+      const curSteelInput = document.getElementById('curSteel');
+      const curCoolInput = document.getElementById('curCool');
+      const curWhetInput = document.getElementById('curWhet');
+
+      // 输出展示span
+      const totalBonusSpan = document.getElementById('totalBonusDisplay');
+      const totalTicketsSpan = document.getElementById('totalTicketsDisplay');
+      const remainSmithSpan = document.getElementById('remainSmithTimes');
+      const totalSmithSpan = document.getElementById('totalSmithTimes');
+      const discountTicketsSpan = document.getElementById('discountTickets');
+      const lackTicketsSpan = document.getElementById('lackTickets');
+
+      // 资源总需
+      const totalWoodSpan = document.getElementById('totalWood');
+      const totalSteelSpan = document.getElementById('totalSteel');
+      const totalCoolSpan = document.getElementById('totalCool');
+      const totalWhetSpan = document.getElementById('totalWhet');
+      // 剩余资源span
+      const remWoodSpan = document.getElementById('remWood');
+      const remSteelSpan = document.getElementById('remSteel');
+      const remCoolSpan = document.getElementById('remCool');
+      const remWhetSpan = document.getElementById('remWhet');
+
+      // 辅助函数：获取数字，无效则返回默认0 (或指定默认值)
+      function getNum(input, defaultValue = 0) {
+        if (!input) return defaultValue;
+        let val = parseFloat(input.value);
+        return isNaN(val) ? defaultValue : val;
+      }
+
+      // 核心更新函数
+      function updateAll() {
+        // ----- 读取输入 -----
+        let targetScore = getNum(targetScoreInput, 5000);
+        if (targetScore < 0) targetScore = 0;
         
-        // 御札数量输入
-        const umeCountInput = document.getElementById('umeCount');
-        const takeCountInput = document.getElementById('takeCount');
-        const matsuCountInput = document.getElementById('matsuCount');
-        const fujiCountInput = document.getElementById('fujiCount');
+        // 御札数量（整数）
+        let plum = Math.floor(getNum(plumInput, 0));
+        let bamboo = Math.floor(getNum(bambooInput, 0));
+        let pine = Math.floor(getNum(pineInput, 0));
+        let fuji = Math.floor(getNum(fujiInput, 0));
         
-        // 资源当前持有输入
-        const charcoalCurrentInput = document.getElementById('charcoalCurrent');
-        const steelCurrentInput = document.getElementById('steelCurrent');
-        const coolantCurrentInput = document.getElementById('coolantCurrent');
-        const wheelCurrentInput = document.getElementById('wheelCurrent');
+        // 委托符持有
+        let holdTickets = getNum(holdTicketsInput, 0);
+        if (holdTickets < 0) holdTickets = 0;
+
+        // 单次资源消耗
+        let perWood = getNum(perWoodInput, 700);
+        let perSteel = getNum(perSteelInput, 700);
+        let perCool = getNum(perCoolInput, 700);
+        let perWhet = getNum(perWhetInput, 700);
         
-        // 折扣切换
-        const discountToggle = document.getElementById('discountToggle');
+        // 当前持有资源
+        let curWood = getNum(curWoodInput, 0);
+        let curSteel = getNum(curSteelInput, 0);
+        let curCool = getNum(curCoolInput, 0);
+        let curWhet = getNum(curWhetInput, 0);
         
-        // 结果显示元素
-        const totalPointsDisplay = document.getElementById('totalPointsDisplay');
-        const weilaiTimeDisplay = document.getElementById('weilaiTimeDisplay');
-        const currentWeilaiDisplay = document.getElementById('currentWeilaiDisplay');
+        // ----- 御札计算 -----
+        const bonusPerPlum = 10, bonusPerBamboo = 15, bonusPerPine = 20, bonusPerFuji = 35;
+        let totalBonus = plum * bonusPerPlum + bamboo * bonusPerBamboo + pine * bonusPerPine + fuji * bonusPerFuji;
         
-        const yuzhaTotalPointsEl = document.getElementById('yuzhaTotalPoints');
-        const remainingForgingEl = document.getElementById('remainingForging');
-        const yuzhaWeilaiEl = document.getElementById('yuzhaWeilai');
-        const totalWeilaiEl = document.getElementById('totalWeilai');
-        const lackWeilaiEl = document.getElementById('lackWeilai');
+        // 御札总数 = 御札所需委托符
+        let totalTickets = plum + bamboo + pine + fuji;
         
-        // 资源需求显示
-        const charcoalNeededEl = document.getElementById('charcoalNeeded');
-        const steelNeededEl = document.getElementById('steelNeeded');
-        const coolantNeededEl = document.getElementById('coolantNeeded');
-        const wheelNeededEl = document.getElementById('wheelNeeded');
-        
-        // 资源剩余显示
-        const charcoalRemainingEl = document.getElementById('charcoalRemaining');
-        const steelRemainingEl = document.getElementById('steelRemaining');
-        const coolantRemainingEl = document.getElementById('coolantRemaining');
-        const wheelRemainingEl = document.getElementById('wheelRemaining');
-        
-        // 按钮
-        const calculateBtn = document.getElementById('calculateBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const saveBtn = document.getElementById('saveBtn');
-        
-        // 常量定义
-        const SINGLE_POINTS = 5; // 无御札单次锻刀积分
-        const RESOURCE_PER_FORGE = 700; // 单次锻刀各项资源消耗
-        const YUZHA_BONUS = {
-            'ume': 10,
-            'take': 15,
-            'matsu': 20,
-            'fuji': 35
-        };
-        
-        // 从本地存储加载数据
-        function loadSavedData() {
-            const savedData = localStorage.getItem('tkrbForgingCalculator');
-            if (savedData) {
-                try {
-                    const data = JSON.parse(savedData);
-                    
-                    // 设置输入值
-                    totalPointsInput.value = data.totalPoints || 5000;
-                    weilaiTimeInput.value = data.weilaiTime || 7;
-                    currentWeilaiInput.value = data.currentWeilai || 0;
-                    
-                    umeCountInput.value = data.umeCount || 0;
-                    takeCountInput.value = data.takeCount || 0;
-                    matsuCountInput.value = data.matsuCount || 0;
-                    fujiCountInput.value = data.fujiCount || 0;
-                    
-                    charcoalCurrentInput.value = data.charcoalCurrent || 0;
-                    steelCurrentInput.value = data.steelCurrent || 0;
-                    coolantCurrentInput.value = data.coolantCurrent || 0;
-                    wheelCurrentInput.value = data.wheelCurrent || 0;
-                    
-                    discountToggle.checked = data.discountEnabled !== false;
-                    
-                    // 立即计算
-                    calculateAll();
-                } catch (e) {
-                    console.error('加载保存数据失败:', e);
-                }
-            }
+        // ----- 锻刀次数计算 (忠实原表但剩余次数向上取整，合理) -----
+        let remainScore = targetScore - totalBonus;
+        let remainTimesRaw = remainScore / 5;  // 无御札单次积分5
+        let remainTimes = 0;
+        if (remainTimesRaw > 0) {
+          remainTimes = Math.ceil(remainTimesRaw); // 向上取整，锻刀次数整数
+        } else {
+          remainTimes = 0; // 目标已达成甚至超出
         }
         
-        // 保存数据到本地存储
-        function saveData() {
-            const data = {
-                totalPoints: parseInt(totalPointsInput.value) || 0,
-                weilaiTime: parseInt(weilaiTimeInput.value) || 7,
-                currentWeilai: parseInt(currentWeilaiInput.value) || 0,
-                
-                umeCount: parseInt(umeCountInput.value) || 0,
-                takeCount: parseInt(takeCountInput.value) || 0,
-                matsuCount: parseInt(matsuCountInput.value) || 0,
-                fujiCount: parseInt(fujiCountInput.value) || 0,
-                
-                charcoalCurrent: parseInt(charcoalCurrentInput.value) || 0,
-                steelCurrent: parseInt(steelCurrentInput.value) || 0,
-                coolantCurrent: parseInt(coolantCurrentInput.value) || 0,
-                wheelCurrent: parseInt(wheelCurrentInput.value) || 0,
-                
-                discountEnabled: discountToggle.checked,
-                savedAt: new Date().toISOString()
-            };
-            
-            localStorage.setItem('tkrbForgingCalculator', JSON.stringify(data));
-            alert('数据已保存到本地浏览器！下次打开时会自动加载。');
-        }
+        // 总锻刀次数 = 剩余次数 + 御札总数
+        let totalSmithTimes = remainTimes + totalTickets;
         
-        // 重置所有数据
-        function resetData() {
-            if (confirm('确定要重置所有数据吗？')) {
-                totalPointsInput.value = 5000;
-                weilaiTimeInput.value = 7;
-                currentWeilaiInput.value = 0;
-                
-                umeCountInput.value = 0;
-                takeCountInput.value = 0;
-                matsuCountInput.value = 0;
-                fujiCountInput.value = 0;
-                
-                charcoalCurrentInput.value = 0;
-                steelCurrentInput.value = 0;
-                coolantCurrentInput.value = 0;
-                wheelCurrentInput.value = 0;
-                
-                discountToggle.checked = true;
-                
-                localStorage.removeItem('tkrbForgingCalculator');
-                calculateAll();
-                alert('数据已重置！');
-            }
-        }
+        // 九折后委托符
+        let discountTickets = totalSmithTimes * 0.9;
         
-        // 计算御札总加成积分
-        function calculateYuzhaPoints() {
-            const umeCount = parseInt(umeCountInput.value) || 0;
-            const takeCount = parseInt(takeCountInput.value) || 0;
-            const matsuCount = parseInt(matsuCountInput.value) || 0;
-            const fujiCount = parseInt(fujiCountInput.value) || 0;
-            
-            return (umeCount * YUZHA_BONUS.ume) + 
-                   (takeCount * YUZHA_BONUS.take) + 
-                   (matsuCount * YUZHA_BONUS.matsu) + 
-                   (fujiCount * YUZHA_BONUS.fuji);
-        }
+        // 缺少委托符
+        let lackTickets = holdTickets - discountTickets;
         
-        // 计算御札所需委托符数量
-        function calculateYuzhaWeilai() {
-            const umeCount = parseInt(umeCountInput.value) || 0;
-            const takeCount = parseInt(takeCountInput.value) || 0;
-            const matsuCount = parseInt(matsuCountInput.value) || 0;
-            const fujiCount = parseInt(fujiCountInput.value) || 0;
-            
-            return umeCount + takeCount + matsuCount + fujiCount;
-        }
+        // ----- 资源计算 -----
+        let totalWood = totalSmithTimes * perWood;
+        let totalSteel = totalSmithTimes * perSteel;
+        let totalCool = totalSmithTimes * perCool;
+        let totalWhet = totalSmithTimes * perWhet;
         
-        // 主计算函数
-        function calculateAll() {
-            // 更新显示值
-            totalPointsDisplay.textContent = totalPointsInput.value;
-            weilaiTimeDisplay.textContent = `${weilaiTimeInput.value} 天`;
-            currentWeilaiDisplay.textContent = currentWeilaiInput.value;
-            
-            // 获取基本输入值
-            const totalPoints = parseInt(totalPointsInput.value) || 0;
-            const currentWeilai = parseInt(currentWeilaiInput.value) || 0;
-            
-            // 计算御札相关
-            const yuzhaPoints = calculateYuzhaPoints();
-            const yuzhaWeilai = calculateYuzhaWeilai();
-            
-            // 计算剩余所需锻刀次数
-            const remainingForging = Math.max(0, Math.ceil((totalPoints - yuzhaPoints) / SINGLE_POINTS));
-            
-            // 计算总需委托符和缺少委托符
-            const totalWeilai = remainingForging + yuzhaWeilai;
-            const lackWeilai = Math.max(0, totalWeilai - currentWeilai);
-            
-            // 更新结果显示
-            yuzhaTotalPointsEl.textContent = yuzhaPoints;
-            remainingForgingEl.textContent = remainingForging;
-            yuzhaWeilaiEl.textContent = yuzhaWeilai;
-            totalWeilaiEl.textContent = totalWeilai;
-            lackWeilaiEl.textContent = lackWeilai;
-            
-            // 计算资源需求
-            const discount = discountToggle.checked ? 0.9 : 1.0;
-            const baseResources = totalWeilai * RESOURCE_PER_FORGE;
-            const discountedResources = Math.ceil(baseResources * discount);
-            
-            // 更新资源需求显示
-            charcoalNeededEl.textContent = formatNumber(discountedResources);
-            steelNeededEl.textContent = formatNumber(discountedResources);
-            coolantNeededEl.textContent = formatNumber(discountedResources);
-            wheelNeededEl.textContent = formatNumber(discountedResources);
-            
-            // 计算资源剩余
-            const charcoalCurrent = parseInt(charcoalCurrentInput.value) || 0;
-            const steelCurrent = parseInt(steelCurrentInput.value) || 0;
-            const coolantCurrent = parseInt(coolantCurrentInput.value) || 0;
-            const wheelCurrent = parseInt(wheelCurrentInput.value) || 0;
-            
-            const charcoalRemaining = charcoalCurrent - discountedResources;
-            const steelRemaining = steelCurrent - discountedResources;
-            const coolantRemaining = coolantCurrent - discountedResources;
-            const wheelRemaining = wheelCurrent - discountedResources;
-            
-            // 更新资源剩余显示
-            updateRemainingDisplay(charcoalRemainingEl, charcoalRemaining);
-            updateRemainingDisplay(steelRemainingEl, steelRemaining);
-            updateRemainingDisplay(coolantRemainingEl, coolantRemaining);
-            updateRemainingDisplay(wheelRemainingEl, wheelRemaining);
-        }
+        let remWood = curWood - totalWood;
+        let remSteel = curSteel - totalSteel;
+        let remCool = curCool - totalCool;
+        let remWhet = curWhet - totalWhet;
         
-        // 格式化数字（添加千位分隔符）
-        function formatNumber(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
+        // ----- 更新DOM显示 -----
+        // 总加成 / 御札可锻积分
+        totalBonusSpan.textContent = totalBonus;
+        totalTicketsSpan.textContent = totalTickets;
         
-        // 更新剩余资源显示
-        function updateRemainingDisplay(element, value) {
-            if (value >= 0) {
-                element.innerHTML = `剩余：<span class="positive">${formatNumber(value)}</span>`;
-            } else {
-                element.innerHTML = `缺少：<span class="negative">${formatNumber(Math.abs(value))}</span>`;
-            }
-        }
+        remainSmithSpan.textContent = remainTimes;
+        totalSmithSpan.textContent = totalSmithTimes;
+        // 九折保留1位小数，更清晰
+        discountTicketsSpan.textContent = discountTickets.toFixed(1);
+        lackTicketsSpan.textContent = lackTickets.toFixed(1);
         
-        // 初始化事件监听
-        function initEventListeners() {
-            // 为所有输入添加事件监听
-            const allInputs = document.querySelectorAll('input[type="number"]');
-            allInputs.forEach(input => {
-                input.addEventListener('input', calculateAll);
-            });
-            
-            // 折扣切换监听
-            discountToggle.addEventListener('change', calculateAll);
-            
-            // 按钮事件监听
-            calculateBtn.addEventListener('click', calculateAll);
-            resetBtn.addEventListener('click', resetData);
-            saveBtn.addEventListener('click', saveData);
-            
-            // 页面加载时计算一次
-            window.addEventListener('load', () => {
-                loadSavedData();
-                calculateAll();
-            });
-        }
+        // 资源总需
+        totalWoodSpan.textContent = Math.floor(totalWood); // 取整展示，因为消耗通常整数
+        totalSteelSpan.textContent = Math.floor(totalSteel);
+        totalCoolSpan.textContent = Math.floor(totalCool);
+        totalWhetSpan.textContent = Math.floor(totalWhet);
         
-        // 初始化
-        initEventListeners();
-    </script>
+        // 剩余资源（保留整数）
+        remWoodSpan.textContent = Math.floor(remWood);
+        remSteelSpan.textContent = Math.floor(remSteel);
+        remCoolSpan.textContent = Math.floor(remCool);
+        remWhetSpan.textContent = Math.floor(remWhet);
+        
+        // ----- 红底标出（缺少资源）-----
+        function setRedBg(span, value) {
+          if (value < 0) {
+            span.classList.add('red-bg');
+          } else {
+            span.classList.remove('red-bg');
+          }
+        }
+        setRedBg(remWoodSpan, remWood);
+        setRedBg(remSteelSpan, remSteel);
+        setRedBg(remCoolSpan, remCool);
+        setRedBg(remWhetSpan, remWhet);
+        
+        // 如果缺少委托符为负，可加视觉提示 (非必需但友好)
+        if (lackTickets < 0) {
+          lackTicketsSpan.style.color = '#b33a3a';
+          lackTicketsSpan.style.fontWeight = 'bold';
+        } else {
+          lackTicketsSpan.style.color = '#4a3c32';
+          lackTicketsSpan.style.fontWeight = '700';
+        }
+      }
+
+      // 绑定input事件，所有输入都触发更新
+      const inputs = [
+        targetScoreInput, plumInput, bambooInput, pineInput, fujiInput,
+        holdTicketsInput, perWoodInput, perSteelInput, perCoolInput, perWhetInput,
+        curWoodInput, curSteelInput, curCoolInput, curWhetInput
+      ];
+
+      inputs.forEach(input => {
+        if (input) {
+          input.addEventListener('input', updateAll);
+          input.addEventListener('change', updateAll);
+        }
+      });
+
+      // 初始化，立即计算一次
+      updateAll();
+    })();
+  </script>
+
+  <!-- 注：完全按照原表公式，锻刀剩余次数采用向上取整以保证整数锻刀，资源总需相应整数。
+       红框手动填写处用红色边框标明，剩余资源负数自动红底。 其他说明文字保留原表风格。 -->
 </body>
 </html>
