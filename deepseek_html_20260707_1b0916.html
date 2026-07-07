@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刀剑乱舞 · 限锻资源计算器</title>
+    <style>
+        /* === 全局重置 & 基础 === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f0e8;
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
+            color: #2c2c2c;
+            padding: 24px 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .app-wrapper {
+            max-width: 1200px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 16px 48px rgba(139, 26, 26, 0.10);
+            padding: 32px 36px 28px;
+            transition: all 0.2s;
+        }
+
+        /* === 头部 === */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            border-bottom: 3px solid #e8ddd0;
+            padding-bottom: 18px;
+            margin-bottom: 28px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 6px 14px;
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #8b1a1a;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #8b1a1a 0%, #c0392b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-left .subtitle {
+            font-size: 15px;
+            color: #8b7a6b;
+            font-weight: 400;
+            background: #f0ebe4;
+            padding: 2px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header-right {
+            font-size: 13px;
+            color: #a39282;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .header-right a {
+            color: #8b1a1a;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .header-right a:hover {
+            color: #c0392b;
+            text-decoration: underline;
+        }
+
+        /* === 网格布局 === */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            margin-bottom: 28px;
+        }
+
+        @media (max-width: 820px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        /* === 卡片 === */
+        .card {
+            background: #fcfaf7;
+            border-radius: 18px;
+            padding: 22px 24px 24px;
+            border: 1px solid #ede7e0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: border-color 0.2s;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #5a4a3a;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .card-title .badge {
+            background: #8b1a1a;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 1px 12px;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+        }
+
+        .card-title .badge.gold {
+            background: #c9a96e;
+        }
+
+        /* === 表单行 === */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px 16px;
+            margin-bottom: 14px;
+        }
+
+        .form-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 6px 12px;
+            flex-wrap: wrap;
+            flex: 1 1 auto;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #4d3e30;
+            white-space: nowrap;
+        }
+
+        .form-group .label-hint {
+            font-size: 12px;
+            color: #b0a094;
+            font-weight: 400;
+        }
+
+        input[type="number"] {
+            width: 90px;
+            padding: 8px 10px;
+            border: 2px solid #e0d6ca;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #2c2c2c;
+            background: #ffffff;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            outline: none;
+            font-family: inherit;
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"]:focus {
+            border-color: #8b1a1a;
+            box-shadow: 0 0 0 3px rgba(139, 26, 26, 0.12);
+        }
+
+        input[type="number"].input-red {
+            border-color: #c0392b;
+            background: #fff8f6;
+        }
+
+        input[type="number"].input-red:focus {
+            border-color: #8b1a1a;
+            box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.15);
+        }
+
+        .input-small {
+            width: 72px;
+        }
+
+        .input-medium {
+            width: 100px;
+        }
+
+        /* === 御札行 === */
+        .ofuda-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 20px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 480px) {
+            .ofuda-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ofuda-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fffbf8;
+            padding: 8px 14px 8px 16px;
+            border-radius: 12px;
+            border: 1px solid #ede7e0;
+            flex-wrap: wrap;
+            gap: 6px 10px;
+        }
+
+        .ofuda-item .ofuda-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: #4d3e30;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ofuda-item .ofuda-name .dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 2px;
+        }
+
+        .dot-ume {
+            background: #e8798a;
+        }
+        .dot-take {
+            background: #6daa7a;
+        }
+        .dot-matsu {
+            background: #d4a06a;
+        }
+        .dot-fuji {
+            background: #9b7bb8;
+        }
+
+        .ofuda-item .ofuda-bonus {
+            font-size: 13px;
+            color: #7a6b5c;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ofuda-item .ofuda-bonus strong {
+            color: #8b1a1a;
+            font-weight: 600;
+        }
+
+        .ofuda-item input[type="number"] {
+            width: 64px;
+            padding: 6px 8px;
+            font-size: 14px;
+        }
+
+        .ofuda-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 28px;
+            padding-top: 12px;
+            border-top: 2px dashed #e8ddd0;
+            margin-top: 4px;
+        }
+
+        .ofuda-summary .stat {
+            font-size: 14px;
+            color: #4d3e30;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .ofuda-summary .stat strong {
+            font-size: 17px;
+            color: #8b1a1a;
+            font-weight: 700;
+        }
+
+        /* === 结果数值 === */
+        .result-value {
+            font-weight: 700;
+            color: #8b1a1a;
+            font-size: 16px;
+            min-width: 40px;
+            display: inline-block;
+        }
+
+        .result-value.green {
+            color: #2d7d46;
+        }
+
+        .result-value.gold {
+            color: #b8860b;
+        }
+
+        /* === 委托符行 === */
+        .ticket-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px 24px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0eae3;
+        }
+
+        .ticket-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .ticket-row .label {
+            font-size: 14px;
+            color: #4d3e30;
+            font-weight: 500;
+            min-width: 100px;
+        }
+
+        .ticket-row .value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2c2c2c;
+        }
+
+        .ticket-row .value.highlight {
+            color: #8b1a1a;
+        }
+
+        .ticket-row .value.danger {
+            color: #c0392b;
+            background: #fde8e5;
+            padding: 2px 14px;
+            border-radius: 20px;
+        }
+
+        .ticket-row .value.safe {
+            color: #2d7d46;
+            background: #e6f4ea;
+            padding: 2px 14px;
+            border-radius: 20px;
+        }
+
+        .ticket-row .tag {
+            font-size: 12px;
+            color: #b0a094;
+            background: #f0ebe4;
+            padding: 0 12px;
+            border-radius: 30px;
+            line-height: 24px;
+            font-weight: 400;
+        }
+
+        /* === 资源表格 === */
+        .resource-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 6px;
+        }
+
+        .resource-table th,
+        .resource-table td {
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 14px;
+            border-bottom: 1px solid #f0eae3;
+        }
+
+        .resource-table th {
+            font-weight: 600;
+            color: #4d3e30;
+            background: #f8f4ee;
+            font-size: 13px;
+            letter-spacing: 0.3px;
+        }
+
+        .resource-table th:first-child,
+        .resource-table td:first-child {
+            text-align: left;
+            padding-left: 6px;
+            font-weight: 500;
+            color: #5a4a3a;
+        }
+
+        .resource-table td {
+            color: #2c2c2c;
+        }
+
+        .resource-table .num {
+            font-weight: 600;
+            font-feature-settings: "tnum";
+        }
+
+        .resource-table .num.danger {
+            color: #c0392b;
+            background: #fde8e5;
+            padding: 2px 8px;
+            border-radius: 8px;
+            display: inline-block;
+            min-width: 60px;
+        }
+
+        .resource-table .num.safe {
+            color: #2d7d46;
+        }
+
+        .resource-table .input-cell {
+            padding: 4px 2px;
+        }
+
+        .resource-table .input-cell input[type="number"] {
+            width: 88px;
+            padding: 6px 8px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .resource-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* === 底栏 === */
+        .footer {
+            margin-top: 28px;
+            padding-top: 18px;
+            border-top: 2px solid #ede7e0;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            font-size: 13px;
+            color: #a39282;
+        }
+
+        .footer .credit {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 18px;
+        }
+
+        .footer .credit a {
+            color: #8b1a1a;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer .credit a:hover {
+            text-decoration: underline;
+        }
+
+        .footer .note {
+            font-size: 12px;
+            color: #bfb2a4;
+            font-style: italic;
+        }
+
+        /* === 响应式微调 === */
+        @media (max-width: 600px) {
+            .app-wrapper {
+                padding: 18px 14px 20px;
+                border-radius: 20px;
+            }
+
+            .header-left h1 {
+                font-size: 22px;
+            }
+
+            .header-right {
+                font-size: 12px;
+                gap: 10px;
+            }
+
+            .card {
+                padding: 16px 14px 18px;
+            }
+
+            .form-row {
+                gap: 8px 10px;
+            }
+
+            input[type="number"] {
+                width: 72px;
+                padding: 6px 8px;
+                font-size: 14px;
+            }
+
+            .input-medium {
+                width: 80px;
+            }
+
+            .resource-table th,
+            .resource-table td {
+                padding: 8px 4px;
+                font-size: 13px;
+            }
+
+            .resource-table .input-cell input[type="number"] {
+                width: 64px;
+                padding: 4px 6px;
+                font-size: 13px;
+            }
+
+            .ofuda-item {
+                padding: 6px 10px;
+            }
+
+            .ofuda-item input[type="number"] {
+                width: 54px;
+                padding: 4px 6px;
+                font-size: 13px;
+            }
+
+            .ticket-row {
+                gap: 6px 12px;
+                padding: 8px 0;
+            }
+
+            .ticket-row .label {
+                min-width: 70px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .resource-table .input-cell input[type="number"] {
+                width: 52px;
+                padding: 4px 4px;
+                font-size: 12px;
+            }
+
+            .resource-table th,
+            .resource-table td {
+                font-size: 12px;
+                padding: 6px 2px;
+            }
+        }
+
+        /* 工具类 */
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .gap-4 {
+            gap: 4px;
+        }
+        .text-muted {
+            color: #b0a094;
+            font-weight: 400;
+        }
+        .text-sm {
+            font-size: 13px;
+        }
+        .fw-600 {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper" id="app">
+
+        <!-- ===== 头部 ===== -->
+        <header class="header">
+            <div class="header-left">
+                <h1>⚔ 刀剑乱舞</h1>
+                <span class="subtitle">限锻资源计算器</span>
+            </div>
+            <div class="header-right">
+                <span>📖 红框为手动填写</span>
+                <a href="#" onclick="return false;">📱 小红书 @尚佳鴳</a>
+                <a href="#" onclick="return false;">✉ QQ 3378517298</a>
+            </div>
+        </header>
+
+        <!-- ===== 主体：两列 ===== -->
+        <div class="grid-2col">
+
+            <!-- ===== 左列：锻刀积分 + 委托符 ===== -->
+            <div class="card">
+                <div class="card-title">
+                    🎯 锻刀积分 &amp; 委托符
+                    <span class="badge">核心</span>
+                </div>
+
+                <!-- 总需锻刀积分 -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>总需锻刀积分</label>
+                        <input type="number" id="targetScore" class="input-red input-medium" value="5000" min="0" step="100">
+                    </div>
+                    <div class="form-group">
+                        <label>无御札单次积分</label>
+                        <input type="number" id="baseScore" class="input-red input-small" value="5" min="1" step="1">
+                    </div>
+                </div>
+
+                <!-- 御札可锻积分 (只读) -->
+                <div class="form-row" style="margin-top:2px;">
+                    <div class="form-group">
+                        <label>御札可锻积分</label>
+                        <span class="result-value" id="ofudaScoreDisplay">0</span>
+                        <span class="text-muted text-sm">= 总加成积分</span>
+                    </div>
+                </div>
+
+                <!-- 分割线 -->
+                <hr style="border: none; border-top: 2px dashed #ede7e0; margin: 16px 0 14px;">
+
+                <!-- 委托符计算结果 -->
+                <div class="ticket-row">
+                    <span class="label">御札所需委托符</span>
+                    <span class="value highlight" id="ticketForOfuda">0</span>
+                    <span class="tag">梅+竹+松+富士</span>
+                </div>
+                <div class="ticket-row">
+                    <span class="label">剩余所需锻刀次数</span>
+                    <span class="value highlight" id="remainingSmiths">0</span>
+                    <span class="tag">(目标 − 御札积分) ÷ 单次</span>
+                </div>
+                <div class="ticket-row">
+                    <span class="label">总需委托符</span>
+                    <span class="value highlight" id="totalTickets">0</span>
+                    <span class="tag">剩余次数 + 御札所需</span>
+                </div>
+                <div class="ticket-row">
+                    <span class="label">九折后委托符</span>
+                    <span class="value gold" id="discountTickets">0</span>
+                    <span class="tag">× 0.9</span>
+                </div>
+                <div class="ticket-row" style="border-bottom: none; padding-bottom:4px;">
+                    <span class="label">持有委托符</span>
+                    <input type="number" id="ownTickets" class="input-red input-small" value="0" min="0" step="10">
+                </div>
+                <div class="ticket-row" style="border-bottom: none; padding-top:4px;">
+                    <span class="label">缺少委托符</span>
+                    <span class="value" id="missingTickets">0</span>
+                    <span class="tag" id="missingTag">九折后 − 持有</span>
+                </div>
+            </div>
+
+            <!-- ===== 右列：御札管理 ===== -->
+            <div class="card">
+                <div class="card-title">
+                    🎴 御札管理
+                    <span class="badge gold">加成</span>
+                </div>
+
+                <div class="ofuda-grid">
+                    <!-- 梅 -->
+                    <div class="ofuda-item">
+                        <span class="ofuda-name">
+                            <span class="dot dot-ume"></span> 梅
+                        </span>
+                        <input type="number" id="umeCount" class="input-red" value="0" min="0" step="1">
+                        <span class="ofuda-bonus">×10 = <strong id="umeBonus">0</strong></span>
+                    </div>
+                    <!-- 竹 -->
+                    <div class="ofuda-item">
+                        <span class="ofuda-name">
+                            <span class="dot dot-take"></span> 竹
+                        </span>
+                        <input type="number" id="takeCount" class="input-red" value="0" min="0" step="1">
+                        <span class="ofuda-bonus">×15 = <strong id="takeBonus">0</strong></span>
+                    </div>
+                    <!-- 松 -->
+                    <div class="ofuda-item">
+                        <span class="ofuda-name">
+                            <span class="dot dot-matsu"></span> 松
+                        </span>
+                        <input type="number" id="matsuCount" class="input-red" value="0" min="0" step="1">
+                        <span class="ofuda-bonus">×20 = <strong id="matsuBonus">0</strong></span>
+                    </div>
+                    <!-- 富士 -->
+                    <div class="ofuda-item">
+                        <span class="ofuda-name">
+                            <span class="dot dot-fuji"></span> 富士
+                        </span>
+                        <input type="number" id="fujiCount" class="input-red" value="0" min="0" step="1">
+                        <span class="ofuda-bonus">×60 = <strong id="fujiBonus">0</strong></span>
+                    </div>
+                </div>
+
+                <div class="ofuda-summary">
+                    <span class="stat">📊 总加成积分 <strong id="totalBonus">0</strong></span>
+                    <span class="stat">🎫 御札所需委托符 <strong id="ofudaTicketCount">0</strong></span>
+                </div>
+
+                <div style="margin-top: 14px; padding: 10px 14px; background: #f8f4ee; border-radius: 12px; font-size: 13px; color: #7a6b5c; display: flex; flex-wrap: wrap; gap: 4px 16px;">
+                    <span>💡 每张御札消耗 <strong>1</strong> 委托符</span>
+                    <span>• 梅 +10 积分</span>
+                    <span>• 竹 +15 积分</span>
+                    <span>• 松 +20 积分</span>
+                    <span>• 富士 +60 积分</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 资源计算 (全宽) ===== -->
+        <div class="card" style="margin-top: 4px;">
+            <div class="card-title">
+                ⚒️ 资源计算
+                <span class="badge">木炭 · 玉钢 · 冷却材 · 砥石</span>
+                <span style="font-size:13px; font-weight:400; color:#b0a094; margin-left:auto;">单次各消耗 700</span>
+            </div>
+
+            <table class="resource-table" id="resourceTable">
+                <thead>
+                    <tr>
+                        <th style="width:18%;">资源</th>
+                        <th style="width:18%;">单次数量</th>
+                        <th style="width:22%;">总需数量</th>
+                        <th style="width:22%;">当前持有</th>
+                        <th style="width:20%;">消耗后剩余</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🔥 木炭</td>
+                        <td class="num">700</td>
+                        <td class="num" id="needCharcoal">0</td>
+                        <td class="input-cell"><input type="number" id="ownCharcoal" class="input-red input-medium" value="0" min="0" step="1000"></td>
+                        <td class="num" id="leftCharcoal">0</td>
+                    </tr>
+                    <tr>
+                        <td>⚔ 玉钢</td>
+                        <td class="num">700</td>
+                        <td class="num" id="needSteel">0</td>
+                        <td class="input-cell"><input type="number" id="ownSteel" class="input-red input-medium" value="0" min="0" step="1000"></td>
+                        <td class="num" id="leftSteel">0</td>
+                    </tr>
+                    <tr>
+                        <td>💧 冷却材</td>
+                        <td class="num">700</td>
+                        <td class="num" id="needCoolant">0</td>
+                        <td class="input-cell"><input type="number" id="ownCoolant" class="input-red input-medium" value="0" min="0" step="1000"></td>
+                        <td class="num" id="leftCoolant">0</td>
+                    </tr>
+                    <tr>
+                        <td>🪨 砥石</td>
+                        <td class="num">700</td>
+                        <td class="num" id="needWhetstone">0</td>
+                        <td class="input-cell"><input type="number" id="ownWhetstone" class="input-red input-medium" value="0" min="0" step="1000"></td>
+                        <td class="num" id="leftWhetstone">0</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; color: #7a6b5c; background: #f8f4ee; padding: 10px 16px; border-radius: 12px;">
+                <span>🔴 <span style="color:#c0392b; font-weight:600;">红底</span> 表示资源不足</span>
+                <span>📝 当前持有为 <strong>手动填写</strong> 区域</span>
+                <span>🔄 所有数值随输入实时更新</span>
+            </div>
+        </div>
+
+        <!-- ===== 底部 ===== -->
+        <footer class="footer">
+            <div class="credit">
+                <span>📌 表格制作：尚佳鴳</span>
+                <a href="#" onclick="return false;">📱 小红书 @尚佳鴳</a>
+                <a href="#" onclick="return false;">✉ QQ 3378517298</a>
+            </div>
+            <div class="note">
+                ⚡ 数据仅供估算参考 · 实际以游戏内为准
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ===== DOM 引用 =====
+            const $ = id => document.getElementById(id);
+
+            // 输入
+            const targetScore = $('targetScore');
+            const baseScore = $('baseScore');
+            const umeCount = $('umeCount');
+            const takeCount = $('takeCount');
+            const matsuCount = $('matsuCount');
+            const fujiCount = $('fujiCount');
+            const ownTickets = $('ownTickets');
+            const ownCharcoal = $('ownCharcoal');
+            const ownSteel = $('ownSteel');
+            const ownCoolant = $('ownCoolant');
+            const ownWhetstone = $('ownWhetstone');
+
+            // 输出 (御札)
+            const umeBonus = $('umeBonus');
+            const takeBonus = $('takeBonus');
+            const matsuBonus = $('matsuBonus');
+            const fujiBonus = $('fujiBonus');
+            const totalBonus = $('totalBonus');
+            const ofudaTicketCount = $('ofudaTicketCount');
+            const ofudaScoreDisplay = $('ofudaScoreDisplay');
+
+            // 输出 (委托符)
+            const ticketForOfuda = $('ticketForOfuda');
+            const remainingSmiths = $('remainingSmiths');
+            const totalTickets = $('totalTickets');
+            const discountTickets = $('discountTickets');
+            const missingTickets = $('missingTickets');
+            const missingTag = $('missingTag');
+
+            // 输出 (资源)
+            const needCharcoal = $('needCharcoal');
+            const needSteel = $('needSteel');
+            const needCoolant = $('needCoolant');
+            const needWhetstone = $('needWhetstone');
+            const leftCharcoal = $('leftCharcoal');
+            const leftSteel = $('leftSteel');
+            const leftCoolant = $('leftCoolant');
+            const leftWhetstone = $('leftWhetstone');
+
+            // 所有需要触发计算的输入
+            const inputs = [
+                targetScore, baseScore,
+                umeCount, takeCount, matsuCount, fujiCount,
+                ownTickets,
+                ownCharcoal, ownSteel, ownCoolant, ownWhetstone
+            ];
+
+            // ===== 工具：格式化数字 =====
+            function fmt(n) {
+                if (typeof n !== 'number' || isNaN(n)) return '0';
+                // 如果是整数，不显示小数
+                if (Number.isInteger(n)) return n.toString();
+                // 否则保留两位小数
+                return n.toFixed(2);
+            }
+
+            function fmtInt(n) {
+                if (typeof n !== 'number' || isNaN(n)) return '0';
+                return Math.floor(n).toString();
+            }
+
+            // ===== 核心计算 =====
+            function calculate() {
+                // 1. 读取输入
+                const target = parseFloat(targetScore.value) || 0;
+                const base = parseFloat(baseScore.value) || 5;
+                const ume = parseInt(umeCount.value) || 0;
+                const take = parseInt(takeCount.value) || 0;
+                const matsu = parseInt(matsuCount.value) || 0;
+                const fuji = parseInt(fujiCount.value) || 0;
+                const ownTicket = parseInt(ownTickets.value) || 0;
+
+                // 2. 御札加成
+                const bUme = ume * 10;
+                const bTake = take * 15;
+                const bMatsu = matsu * 20;
+                const bFuji = fuji * 60;
+                const totalBonusVal = bUme + bTake + bMatsu + bFuji;
+                const ofudaTicketVal = ume + take + matsu + fuji;
+
+                // 3. 锻刀积分
+                const ofudaScore = totalBonusVal; // 御札可锻积分 = 总加成积分
+                const remaining = (target - ofudaScore) / base;
+                const remainingRaw = remaining > 0 ? remaining : 0;
+
+                // 4. 委托符
+                const totalTicketVal = remainingRaw + ofudaTicketVal;
+                const discountVal = totalTicketVal * 0.9;
+                const missingVal = discountVal - ownTicket;
+                const missingFinal = missingVal > 0 ? missingVal : 0;
+
+                // 5. 资源 (单次 700)
+                const perRes = 700;
+                const needChar = totalTicketVal * perRes;
+                const needSteelVal = totalTicketVal * perRes;
+                const needCool = totalTicketVal * perRes;
+                const needWhet = totalTicketVal * perRes;
+
+                const ownChar = parseInt(ownCharcoal.value) || 0;
+                const ownSteelVal = parseInt(ownSteel.value) || 0;
+                const ownCool = parseInt(ownCoolant.value) || 0;
+                const ownWhet = parseInt(ownWhetstone.value) || 0;
+
+                const leftChar = ownChar - needChar;
+                const leftSteelVal = ownSteelVal - needSteelVal;
+                const leftCool = ownCool - needCool;
+                const leftWhet = ownWhet - needWhet;
+
+                // ===== 更新 DOM =====
+
+                // 御札明细
+                umeBonus.textContent = bUme;
+                takeBonus.textContent = bTake;
+                matsuBonus.textContent = bMatsu;
+                fujiBonus.textContent = bFuji;
+                totalBonus.textContent = fmt(totalBonusVal);
+                ofudaTicketCount.textContent = fmtInt(ofudaTicketVal);
+                ofudaScoreDisplay.textContent = fmt(ofudaScore);
+
+                // 委托符
+                ticketForOfuda.textContent = fmtInt(ofudaTicketVal);
+                remainingSmiths.textContent = fmt(remainingRaw);
+                totalTickets.textContent = fmt(totalTicketVal);
+                discountTickets.textContent = fmt(discountVal);
+
+                // 缺少委托符
+                if (missingVal <= 0) {
+                    missingTickets.textContent = '✅ 充足';
+                    missingTickets.className = 'value safe';
+                    missingTag.textContent = '委托符足够';
+                } else {
+                    missingTickets.textContent = fmt(missingFinal);
+                    missingTickets.className = 'value danger';
+                    missingTag.textContent = '九折后 − 持有';
+                }
+
+                // 资源
+                needCharcoal.textContent = fmt(needChar);
+                needSteel.textContent = fmt(needSteelVal);
+                needCoolant.textContent = fmt(needCool);
+                needWhetstone.textContent = fmt(needWhet);
+
+                // 消耗后剩余 (带红底)
+                function setResourceLeft(el, value) {
+                    if (value < 0) {
+                        el.textContent = fmt(value);
+                        el.className = 'num danger';
+                    } else {
+                        el.textContent = fmt(value);
+                        el.className = 'num safe';
+                    }
+                }
+                setResourceLeft(leftCharcoal, leftChar);
+                setResourceLeft(leftSteel, leftSteelVal);
+                setResourceLeft(leftCoolant, leftCool);
+                setResourceLeft(leftWhetstone, leftWhet);
+            }
+
+            // ===== 绑定事件 =====
+            inputs.forEach(inp => {
+                inp.addEventListener('input', calculate);
+                inp.addEventListener('change', calculate);
+            });
+
+            // 额外：当输入框失焦时，确保数值合法
+            inputs.forEach(inp => {
+                inp.addEventListener('blur', function() {
+                    let val = parseFloat(this.value);
+                    if (isNaN(val) || val < 0) {
+                        this.value = 0;
+                    }
+                    calculate();
+                });
+            });
+
+            // ===== 初始化 =====
+            calculate();
+
+            // 额外美化：如果输入框为空或0，自动补0
+            document.querySelectorAll('input[type="number"]').forEach(inp => {
+                inp.addEventListener('focus', function() {
+                    if (this.value === '0' || this.value === '') {
+                        this.select();
+                    }
+                });
+            });
+
+            console.log('⚔ 刀剑乱舞 · 限锻资源计算器 已加载');
+            console.log('📌 数据仅供估算参考，实际以游戏内为准');
+        })();
+    </script>
+
+</body>
+</html>
